@@ -496,26 +496,52 @@ class RequestRefundView(View):
             ref_code = form.cleaned_data.get('ref_code')
             message = form.cleaned_data.get('message')
             email = form.cleaned_data.get('email')
-            # edit the order
+            # Edit the order
             try:
                 order = Order.objects.get(ref_code=ref_code)
                 order.refund_requested = True
                 order.save()
 
-                # store the refund
+                # Save the refund object
                 refund = Refund()
                 refund.order = order
                 refund.reason = message
                 refund.email = email
                 refund.save()
 
-                # issue the refund
-                # stripe.Refund.create(
-                #   charge={{%stripe_charge_id%}})
+                # Use ref_code to get the payment object
+                # From payment object, get the stripe id
+                # Check if payment object received is not null
+                # Use the stripe id to construct the refund object
 
-                messages.info(self.request, "Your request was received.")
+                # Start Stripe Create Refund API call
+                # stripe_refund = stripe.Refund.create(
+                #   charge=Payment.StripeID
+                # )
+                # End Stripe API call.
+
+                # Save the order object with refund granted
+                # order.refund_granted = True
+                # order.refund_successful = True
+                # order.save()
+
+                messages.info(
+                    self.request, "Your request was received and processed.")
                 return redirect("core:request-refund")
 
+            # Exception handling for Order object
             except ObjectDoesNotExist:
                 messages.info(self.request, "This order does not exist.")
                 return redirect("core:request-refund")
+            # TODO: Add exception handling for Refund Create from Stripe:
+            # https://stripe.com/docs/api/errors
+            # These would be like the Payment API. (lines 302-341)
+
+
+class ShowCharges(View):
+    def get(self, *args, **kwargs):
+        charges = stripe.Charge.list(limit=25)
+        context = {
+            'ShowCharges': charges
+        }
+        return render(self.request, "charges.html", context)

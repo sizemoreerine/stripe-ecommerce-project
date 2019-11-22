@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <main>
+    <div class="container">
+
+    <h2>Your Charges</h2>
+       {% for charge in ShowCharges.data %}
+    <div name="{{charge.id}}">{{charge.id}}</div>
+{% endfor %}
+    </div>
+  </main>
+
+{% endblock content %}
