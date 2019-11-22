@@ -509,22 +509,6 @@ class RequestRefundView(View):
                 refund.email = email
                 refund.save()
 
-                # Use ref_code to get the payment object
-                # From payment object, get the stripe id
-                # Check if payment object received is not null
-                # Use the stripe id to construct the refund object
-
-                # Start Stripe Create Refund API call
-                # stripe_refund = stripe.Refund.create(
-                #   charge=Payment.StripeID
-                # )
-                # End Stripe API call.
-
-                # Save the order object with refund granted
-                # order.refund_granted = True
-                # order.refund_successful = True
-                # order.save()
-
                 messages.info(
                     self.request, "Your request was received and processed.")
                 return redirect("core:request-refund")
@@ -533,15 +517,11 @@ class RequestRefundView(View):
             except ObjectDoesNotExist:
                 messages.info(self.request, "This order does not exist.")
                 return redirect("core:request-refund")
-            # TODO: Add exception handling for Refund Create from Stripe:
-            # https://stripe.com/docs/api/errors
-            # These would be like the Payment API. (lines 302-341)
 
 
 class ShowCharges(View):
     def get(self, *args, **kwargs):
-        charges = stripe.Charge.list(limit=25)
         context = {
-            'ShowCharges': charges
+            'ShowCharges': stripe.Charge.list(limit=25)
         }
         return render(self.request, "charges.html", context)
