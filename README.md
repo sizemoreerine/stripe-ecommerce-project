@@ -1,4 +1,4 @@
-# Erin Sizemore's Stripe Written Project
+# Erin Sizemore's E-Commerce Website Project
 # 11/07/19
 
 OVERVIEW
